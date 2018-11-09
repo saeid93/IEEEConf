@@ -18,7 +18,7 @@ adjLists = []
 
 # read the grpahs adjacency lists
 for file in files:
-    adjLists = adjLists + [np.genfromtxt ('simNets/'+file, delimiter=",")]
+    adjLists = adjLists + [np.genfromtxt('simNets/'+file, delimiter=",")]
 
 
 
@@ -39,7 +39,21 @@ for adjList in adjLists:
     print("file "+str(counter)+" completed")
     counter = counter + 1
 
+# add self edges
+adjList = np.genfromtxt('CA-HepTh(9877)idfixed.csv', delimiter=",")
+numOfele = np.shape(adjList)[0]
+for i in range(0, numOfele):
+    rowIndex = int(adjList[i,0]) - 1
+    colIndex = int(adjList[i,1]) - 1
+    if diffGraph.has_edge(rowIndex,colIndex):
+        diffGraph[rowIndex][colIndex]['weight'] = 1
+    else:
+        diffGraph.add_edge(rowIndex,colIndex,weight=1)
+
+
 diffGraph = nx.to_scipy_sparse_matrix(diffGraph)
-# print(diffGraph.todense())
+
 # write matrix to file
 save_sparse_matrix(diffGraph,'diffMatrix.csv')
+
+
